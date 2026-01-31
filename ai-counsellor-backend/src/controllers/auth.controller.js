@@ -7,25 +7,49 @@ import Stage from '../models/Stage.js';
 
 
 export const signup = async (req, res) => {
-  const { name, email, password } = req.body;
-  const hash = await bcrypt.hash(password, 10);
-  const user = await User.create({ name, email, passwordHash: hash });
+  try {
+    const { name, email, password } = req.body;
 
-  // Create default stage if needed
-  await Stage.create({ userId: user._id });
+    // 1️⃣ Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
 
-  const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+    // 2️⃣ Hash password
+    const hash = await bcrypt.hash(password, 10);
 
-  res.json({
-    token,
-    user: {
-      id: user._id,
-      name: user.name,
-      email: user.email,
-      profileComplete: user.profileComplete || false, // initially false
-    },
-  });
+    // 3️⃣ Create user
+    const user = await User.create({ name, email, passwordHash: hash });
+    if (!user || !user._id) {
+      return res.status(500).json({ message: 'Failed to create user' });
+    }
+
+    // 4️⃣ Create default stage safely
+    const existingStage = await Stage.findOne({ userId: user._id });
+    if (!existingStage) {
+      await Stage.create({ userId: user._id, currentStage: 1 });
+    }
+
+    // 5️⃣ Generate JWT
+    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '7d' });
+
+    // 6️⃣ Return response
+    res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        profileComplete: user.profileComplete || false,
+      },
+    });
+  } catch (error) {
+    console.error("Signup Error:", error);
+    res.status(500).json({ message: error.message });
+  }
 };
+
 
 export const login = async (req, res) => {
   const { email, password } = req.body;
