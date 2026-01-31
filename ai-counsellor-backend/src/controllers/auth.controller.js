@@ -10,7 +10,7 @@ export const signup = async (req, res) => {
   try {
     const { name, email, password } = req.body;
 
-    // 1️⃣ Check if user already exists
+    // 1️⃣ Check existing user
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: "Email already registered" });
@@ -21,20 +21,14 @@ export const signup = async (req, res) => {
 
     // 3️⃣ Create user
     const user = await User.create({ name, email, passwordHash: hash });
-    if (!user || !user._id) {
-      return res.status(500).json({ message: "Failed to create user" });
-    }
 
-    // 4️⃣ Create default stage if not exists
-    const existingStage = await Stage.findOne({ userId: user._id });
+    // 4️⃣ Create profile (profileComplete = false by default)
+    await Profile.create({ userId: user._id });
+
+    // 5️⃣ Create stage safely
+    const existingStage = await Stage.findOne({ user: user._id });
     if (!existingStage) {
-      await Stage.create({ userId: user._id, currentStage: "Onboarding" });
-    }
-
-    // 5️⃣ Create empty profile with profileComplete = false
-    const existingProfile = await Profile.findOne({ userId: user._id });
-    if (!existingProfile) {
-      await Profile.create({ userId: user._id, profileComplete: false });
+      await Stage.create({ user: user._id, currentStage: "Onboarding" });
     }
 
     // 6️⃣ Generate JWT
@@ -47,7 +41,7 @@ export const signup = async (req, res) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        profileComplete: false, // derived from profile
+        profileComplete: false, // comes from Profile
       },
     });
   } catch (error) {
