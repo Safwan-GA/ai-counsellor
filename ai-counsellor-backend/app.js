@@ -1,13 +1,13 @@
 import express from 'express';
 import cors from 'cors';
 
-import authRoutes from './routes/auth.routes.js';
-import profileRoutes from './routes/profile.routes.js';
-import dashboardRoutes from './routes/dashboard.routes.js';
-import universityRoutes from './routes/university.routes.js';
-import shortlistRoutes from './routes/shortlist.routes.js';
-import taskRoutes from './routes/task.routes.js';
-import aiRoutes from './routes/ai.routes.js';
+import authRoutes from './src/routes/auth.routes.js';
+import profileRoutes from './src/routes/profile.routes.js';
+import dashboardRoutes from './src/routes/dashboard.routes.js';
+import universityRoutes from './src/routes/university.routes.js';
+import shortlistRoutes from './src/routes/shortlist.routes.js';
+import taskRoutes from './src/routes/task.routes.js';
+import aiRoutes from './src/routes/ai.routes.js';
 
 
 const app = express();
