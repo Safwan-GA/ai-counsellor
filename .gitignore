@@ -1,0 +1,68 @@
+# =========================
+# Backend: ai-counsellor-backend
+# =========================
+
+# Node modules
+/ai-counsellor-backend/node_modules/
+**/node_modules/
+
+# Environment variables
+/ai-counsellor-backend/.env
+**/.env
+
+# Logs
+/ai-counsellor-backend/logs
+**/logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build folders (if backend has any)
+ai-counsellor-backend/dist/
+ai-counsellor-backend/build/
+
+# =========================
+# Frontend: ai-counsellor-frontend
+# =========================
+
+# Node modules
+/ai-counsellor-frontend/node_modules/
+
+# Build output
+/ai-counsellor-frontend/build/
+ai-counsellor-frontend/dist/
+
+# Environment variables
+/ai-counsellor-frontend/.env
+/ai-counsellor-frontend/.env.local
+/ai-counsellor-frontend/.env.development.local
+/ai-counsellor-frontend/.env.test.local
+/ai-counsellor-frontend/.env.production.local
+
+# Local IDE / editor files
+.vscode/
+.idea/
+
+# Misc
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# =========================
+# General
+# =========================
+# Optional lock files (if using multiple package managers)
+**/package-lock.json
+**/yarn.lock
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
