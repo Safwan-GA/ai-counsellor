@@ -8,10 +8,11 @@ import universityRoutes from './src/routes/university.routes.js';
 import shortlistRoutes from './src/routes/shortlist.routes.js';
 import taskRoutes from './src/routes/task.routes.js';
 import aiRoutes from './src/routes/ai.routes.js';
+import "dotenv/config";
 
 
 const app = express();
-
+console.log(process.env.FRONTEND_URL)
 const allowedOrigins = [process.env.FRONTEND_URL];
 
 app.use(cors({
