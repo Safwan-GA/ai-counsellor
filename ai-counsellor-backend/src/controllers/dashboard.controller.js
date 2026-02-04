@@ -11,14 +11,7 @@ export const getDashboard = async (req, res) => {
     const tasks = await Task.find({ user: userId });
 
     res.json({
-      profile: profile
-        ? {
-            name: req.user.name,
-            targetCountry: profile.countries?.[0] || "Not set",
-            intake: profile.intake || "Not set",
-            profileComplete: profile.profileComplete,
-          }
-        : null,
+      profile,
       stage: stageDoc?.currentStage || "Exploring",
       tasks,
     });

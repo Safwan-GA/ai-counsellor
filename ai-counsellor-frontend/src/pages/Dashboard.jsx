@@ -3,32 +3,28 @@ import axios from "../api/axios";
 import ProfileSummary from "../components/dashboard/ProfileSummary";
 import CurrentStage from "../components/dashboard/CurrentStage";
 import TodoList from "../components/dashboard/TodoList";
-// import {user} from useAuth
 import { useAuth } from "../hooks/useAuth";
+import OnboardingForm from "../components/onboarding/OnboardingForm";
 
 export default function Dashboard() {
   const [profile, setProfile] = useState(null);
   const [tasks, setTasks] = useState([]);
-  const [stage, setStage] = useState("Onboarding"); // default stage
-  const {user}=useAuth()
+  const [stage, setStage] = useState("Exploring");
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const { user, setUser } = useAuth();
 
   useEffect(() => {
     const fetchDashboard = async () => {
       try {
         const res = await axios.get("/dashboard");
-        console.log("Dashboard API response:", res.data); // 🔥 debug
-        console.log(user)
-        
-        const profileWithName = res.data.profile
-          ? { ...res.data.profile, name: user.name }
-          : { name: user.name }; // fallback if profile is null
-
-        setProfile(profileWithName);
-        setTasks(res.data.tasks);
+        setProfile(res.data.profile);
+        setTasks(res.data.tasks || []);
+        setStage(res.data.stage || "Exploring");
       } catch (err) {
         console.error("Dashboard fetch error:", err.response || err.message);
       }
     };
+
     fetchDashboard();
   }, []);
 
@@ -36,9 +32,36 @@ export default function Dashboard() {
 
   return (
     <div className="p-6 space-y-6">
-      <ProfileSummary profile={profile} />
-      <CurrentStage stage={profile.currentStage || "Exploring"} />
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <h2 className="text-xl font-semibold">Dashboard</h2>
+        <button
+          className="btn-primary text-sm"
+          onClick={() => setShowOnboarding(true)}
+        >
+          Update Profile
+        </button>
+      </div>
+
+      {/* Cards */}
+      <ProfileSummary profile={{ ...profile, name: user?.name }} />
+      <CurrentStage stage={stage} />
       <TodoList tasks={tasks} />
+
+      {/* Onboarding / Update Modal */}
+      {showOnboarding && (
+        <div className="fixed inset-0 bg-black bg-opacity-40 flex items-center justify-center z-50">
+          <OnboardingForm
+            initialData={profile} 
+            onClose={() => setShowOnboarding(false)}
+            onComplete={(updatedProfile) => {
+              setProfile(updatedProfile);
+              setUser(prev => ({ ...prev, profileComplete: true }));
+              setShowOnboarding(false);
+            }}
+          />
+        </div>
+      )}
     </div>
   );
 }

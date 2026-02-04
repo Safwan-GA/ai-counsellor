@@ -1,17 +1,15 @@
 import { useState } from "react";
 
-export default function OnboardingStep2({ onNext, onBack }) {
-  const [targetDegree, setTargetDegree] = useState("");
-  const [field, setField] = useState("");
-  const [intake, setIntake] = useState("");
-  const [countries, setCountries] = useState([]);
+export default function OnboardingStep2({ onNext, onBack, data }) {
+  const [targetDegree, setTargetDegree] = useState(data?.targetDegree || "");
+  const [field, setField] = useState(data?.field || "");
+  const [intake, setIntake] = useState(data?.intake || "");
+  const [countries, setCountries] = useState(data?.countries || []);
 
   const countryOptions = ["USA", "UK", "Canada", "Germany", "Australia", "Other"];
 
   const toggleCountry = (country) => {
-    setCountries((prev) =>
-      prev.includes(country) ? prev.filter((c) => c !== country) : [...prev, country]
-    );
+    setCountries(prev => prev.includes(country) ? prev.filter(c => c !== country) : [...prev, country]);
   };
 
   const handleNext = () => {
@@ -23,55 +21,41 @@ export default function OnboardingStep2({ onNext, onBack }) {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="whitespace-pre-wrap flex flex-col space-y-4 w-full">
       <h2 className="text-xl font-semibold">Study Goals</h2>
 
-      <div className="space-y-2">
-        <select
-          className="input py-3 px-4"
-          value={targetDegree}
-          onChange={(e) => setTargetDegree(e.target.value)}
-        >
-          <option value="">Select intended degree</option>
-          <option value="Bachelor’s">Bachelor’s</option>
-          <option value="Master’s">Master’s</option>
-          <option value="MBA">MBA</option>
-          <option value="PhD">PhD</option>
-        </select>
-      </div>
+      <select className="input" value={targetDegree} onChange={e => setTargetDegree(e.target.value)}>
+        <option value="">Select intended degree</option>
+        <option value="Bachelor’s">Bachelor’s</option>
+        <option value="Master’s">Master’s</option>
+        <option value="MBA">MBA</option>
+        <option value="PhD">PhD</option>
+      </select>
 
-      <div className="space-y-2">
-        <input
-          className="input py-3 px-4"
-          placeholder="Field of study (e.g., Data Science)"
-          value={field}
-          onChange={(e) => setField(e.target.value)}
-        />
-      </div>
+      <input
+        className="input"
+        placeholder="Field of study (e.g., Data Science)"
+        value={field}
+        onChange={e => setField(e.target.value)}
+      />
 
-      <div className="space-y-2">
-        <select
-          className="input py-3 px-4"
-          value={intake}
-          onChange={(e) => setIntake(e.target.value)}
-        >
-          <option value="">Select target intake</option>
-          <option value="Fall 2026">Fall 2026</option>
-          <option value="Spring 2027">Spring 2027</option>
-          <option value="Fall 2027">Fall 2027</option>
-          <option value="Not sure yet">Not sure yet</option>
-        </select>
-      </div>
+      <select className="input" value={intake} onChange={e => setIntake(e.target.value)}>
+        <option value="">Select target intake</option>
+        <option value="Fall 2026">Fall 2026</option>
+        <option value="Spring 2027">Spring 2027</option>
+        <option value="Fall 2027">Fall 2027</option>
+        <option value="Not sure yet">Not sure yet</option>
+      </select>
 
-      <div className="space-y-2">
-        <p className="text-sm font-medium">Preferred Countries</p>
-        <div className="flex flex-wrap gap-3 mt-2">
-          {countryOptions.map((country) => (
+      <div>
+        <p className="text-sm font-medium mb-1">Preferred Countries</p>
+        <div className="flex flex-wrap gap-2">
+          {countryOptions.map(country => (
             <button
               key={country}
               type="button"
               onClick={() => toggleCountry(country)}
-              className={`px-4 py-2 rounded-full border text-sm ${
+              className={`px-3 py-1 rounded-full border text-sm ${
                 countries.includes(country)
                   ? "bg-indigo-600 text-white border-indigo-600"
                   : "bg-white text-gray-700 border-gray-300"
@@ -83,13 +67,9 @@ export default function OnboardingStep2({ onNext, onBack }) {
         </div>
       </div>
 
-      <div className="flex gap-4 pt-4">
-        <button className="btn-secondary w-full py-3" onClick={onBack}>
-          Back
-        </button>
-        <button className="btn-primary w-full py-3" onClick={handleNext}>
-          Next
-        </button>
+      <div className="flex gap-3">
+        <button className="btn-secondary w-full" onClick={onBack}>Back</button>
+        <button className="btn-primary w-full" onClick={handleNext}>Next</button>
       </div>
     </div>
   );

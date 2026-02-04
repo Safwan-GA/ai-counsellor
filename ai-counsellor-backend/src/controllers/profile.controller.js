@@ -3,7 +3,7 @@ import Profile from "../models/Profile.js";
 // GET /api/profile/me
 export const getProfile = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user.id });
+    const profile = await Profile.findOne({ userId: req.user._id });
 
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
@@ -23,13 +23,13 @@ export const upsertProfile = async (req, res) => {
 
     const profile = await Profile.findOneAndUpdate(
       { userId: req.user._id },
-      { ...data },
+      { ...data, userId: req.user._id },
       { upsert: true, new: true }
     );
 
-    res.status(201).json(profile);
+    res.status(200).json(profile);
   } catch (error) {
-    console.error(error);
+    console.error("Profile save error:", error);
     res.status(500).json({ message: "Failed to save profile" });
   }
 };

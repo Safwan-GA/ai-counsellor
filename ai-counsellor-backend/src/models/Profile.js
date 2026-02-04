@@ -19,6 +19,7 @@ const profileSchema = new mongoose.Schema({
   greGmatStatus: String,
   sopStatus: String,
   profileComplete: { type: Boolean, default: false },
+  lockedUniversity: { type: Boolean, default: false }
 }, { timestamps: true });
 
 export default mongoose.model("Profile", profileSchema);
