@@ -3,7 +3,7 @@ import Profile from "../models/Profile.js";
 // GET /api/profile/me
 export const getProfile = async (req, res) => {
   try {
-    const profile = await Profile.findOne({ userId: req.user._id });
+    const profile = await Profile.findOne({ userId: req.user.id });
 
     if (!profile) {
       return res.status(404).json({ message: "Profile not found" });
@@ -22,9 +22,9 @@ export const upsertProfile = async (req, res) => {
     const data = req.body;
 
     const profile = await Profile.findOneAndUpdate(
-      { userId: req.user._id },
-      { ...data, userId: req.user._id },
-      { upsert: true, new: true }
+      { userId: req.user.id },
+      { ...data, userId: req.user.id },
+      { upsert: true, new: true, runValidators: true }
     );
 
     res.status(200).json(profile);
