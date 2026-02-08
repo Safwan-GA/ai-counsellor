@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../../common/spinner";
 
 export default function LoginForm() {
   const [email, setEmail] = useState("");
@@ -40,7 +41,7 @@ export default function LoginForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 relative">
-      {loading && <FullScreenLoader />}
+      {loading && <FullScreenOverlay />}
 
       <form
         onSubmit={handleSubmit}
@@ -71,11 +72,21 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary w-full flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="btn-primary w-full flex justify-center items-center disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? <Spinner /> : "Login"}
         </button>
       </form>
+    </div>
+  );
+}
+
+function FullScreenOverlay() {
+  return (
+    <div className="fixed inset-0 z-50 bg-black/30 backdrop-blur-sm flex items-center justify-center">
+      <div className="bg-white p-6 rounded-xl shadow-lg">
+        <Spinner />
+      </div>
     </div>
   );
 }
