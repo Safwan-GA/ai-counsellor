@@ -6,39 +6,42 @@ import { useNavigate } from "react-router-dom";
 export default function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
   const { setUser } = useAuth();
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("LOGIN SUBMITTED"); // 🔥 MUST appear
+    if (loading) return;
+    setLoading(true);
 
     try {
       const res = await axios.post("/auth/login", { email, password });
-      console.log("LOGIN RESPONSE:", res.data);
 
       const token = res.data.token;
       localStorage.setItem("token", token);
       axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
       const meRes = await axios.get("/auth/me");
-      setUser(meRes.data.user); // updates state asynchronously
+      setUser(meRes.data.user);
 
-      // Use the fetched user data immediately
       if (meRes.data.user.profileComplete) {
         navigate("/dashboard");
       } else {
         navigate("/onboarding");
       }
-
     } catch (err) {
       console.error("LOGIN ERROR:", err.response?.data || err.message);
       alert("Login failed");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 relative">
+      {loading && <FullScreenLoader />}
+
       <form
         onSubmit={handleSubmit}
         className="bg-white border border-gray-200 shadow-lg rounded-2xl p-8 w-full max-w-sm space-y-5"
@@ -52,6 +55,7 @@ export default function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
+          disabled={loading}
         />
 
         <input
@@ -61,10 +65,15 @@ export default function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
+          disabled={loading}
         />
 
-        <button type="submit" className="btn-primary w-full">
-          Login
+        <button
+          type="submit"
+          disabled={loading}
+          className="btn-primary w-full flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+        >
+          {loading ? <Spinner /> : "Login"}
         </button>
       </form>
     </div>
