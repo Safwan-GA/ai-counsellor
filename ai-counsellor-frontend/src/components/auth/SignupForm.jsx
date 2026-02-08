@@ -2,6 +2,7 @@ import { useState } from "react";
 import axios from "../../api/axios";
 import { useAuth } from "../../hooks/useAuth";
 import { useNavigate } from "react-router-dom";
+import Spinner from "../../common/spinner";
 
 export default function SignupForm() {
   const [name, setName] = useState("");
@@ -37,7 +38,7 @@ export default function SignupForm() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 relative">
-      {loading && <FullScreenLoader />}
+      {loading && <FullScreenOverlay />}
 
       <form
         onSubmit={handleSubmit}
@@ -77,7 +78,7 @@ export default function SignupForm() {
         <button
           type="submit"
           disabled={loading}
-          className="btn-primary w-full flex justify-center items-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed"
+          className="btn-primary w-full flex justify-center items-center disabled:opacity-60 disabled:cursor-not-allowed"
         >
           {loading ? <Spinner /> : "Create Account"}
         </button>
